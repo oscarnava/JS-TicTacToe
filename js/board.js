@@ -1,5 +1,5 @@
-const Board = function Board() {
-  const cells = new Array(9);
+export default function Board() {
+  const cells = new Array(9).fill(null);
 
   const checkIfWinner = (player) => (
     (cells[0] === player && cells[1] === player && cells[2] === player)
@@ -12,7 +12,7 @@ const Board = function Board() {
     || (cells[2] === player && cells[4] === player && cells[6] === player)
   );
 
-  const validMove = (move) => (move >= 1) && (move <= 9) && (cells[move - 1] === undefined);
+  const validMove = (move) => (move >= 1) && (move <= 9) && (cells[move - 1] === null);
 
   const setCell = (pos, value) => {
     cells[pos - 1] = value;
@@ -25,15 +25,13 @@ const Board = function Board() {
     if (checkIfWinner(1)) {
       return 1;
     }
-    if (!cells.includes()) {
+    if (!cells.includes(null)) {
       return -1;
     }
     return null;
   };
 
-  const toString = () => {
-    cells.map((cell) => (cell === undefined ? ' ' : ['X', 'O'][cell]));
-  };
+  const toString = () => cells.map((cell) => (cell === null ? ' ' : ['X', 'O'][cell])).join('');
 
   return {
     validMove,
@@ -41,4 +39,4 @@ const Board = function Board() {
     winner,
     toString,
   };
-};
+}

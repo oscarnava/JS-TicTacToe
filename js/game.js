@@ -1,7 +1,15 @@
+import Board from './board';
+import Player from './player';
+
 const gameState = (function GameState() {
-  const board = Board();
+  let board = Board();
   const players = [];
   let currentPlayer = 0;
+
+  const newGame = (player) => {
+    board = Board();
+    currentPlayer = player;
+  };
 
   const setPlayer = (name, id) => {
     players[id] = Player(name, id);
@@ -29,9 +37,15 @@ const gameState = (function GameState() {
     }
   };
 
+  const getBoardState = () => board.toString();
+
   return {
     setPlayer,
     playMove,
     getStatus,
+    getBoardState,
+    newGame,
   };
 }());
+
+export default gameState;
