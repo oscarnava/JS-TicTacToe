@@ -16,7 +16,7 @@ const gameState = (function GameState() {
     return false;
   };
 
-  const getWinner = () => {
+  const getStatus = () => {
     switch (board.winner()) {
       case 0:
         return { status: 'win', player: players[0] };
@@ -32,6 +32,6 @@ const gameState = (function GameState() {
   return {
     setPlayer,
     playMove,
-    getWinner,
+    getStatus,
   };
 }());
