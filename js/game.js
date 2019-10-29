@@ -1,18 +1,15 @@
 import Board from './board';
 import Player from './player';
+import AI from './ai';
 
-const gameState = (function GameState() {
-  let board = Board();
-  const players = [];
-  let currentPlayer = 0;
-
+const gameState = (function GameState(board = Board(), players = [], currentPlayer = 0) {
   const newGame = (player = 0) => {
     board = Board();
     currentPlayer = player;
   };
 
-  const setPlayer = (name, id) => {
-    players[id] = Player(name, id);
+  const setPlayer = (name, id, isAI = false) => {
+    players[id] = isAI ? AI(name, id) : Player(name, id);
   };
 
   const playMove = (move) => {
@@ -39,12 +36,25 @@ const gameState = (function GameState() {
 
   const getBoardState = () => board.toString();
 
+  const clone = () => {
+    return GameState(board.clone(), [...players], currentPlayer);
+  };
+
+  const getValidMoves = () => board.getValidMoves();
+
+  const nextPlayerTurn = (makeMove) => {
+    players[currentPlayer].playMove(gameState, makeMove);
+  };
+
   return {
     setPlayer,
     playMove,
     getStatus,
     getBoardState,
     newGame,
+    clone,
+    getValidMoves,
+    nextPlayerTurn,
   };
 }());
 

@@ -79,16 +79,17 @@ main {
   color: #ff6c00
 }
 .x:after {
-  content: "\002620"; /*'✕'*/
+  content: '✕'; /*"\002620";*/
 }
 .o {
   color: #a7d129;
 }
 .o:after {
-  content: "\002622"; /*'◯'*/
+  content: '◯'; /*"\002622";*/
 }
 .cell:hover {
   filter: brightness(1.5);
 }
+
 
 /*# sourceMappingURL=/styles.b61e60ae.css.map */

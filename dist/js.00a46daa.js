@@ -125,8 +125,16 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = Board;
 
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread(); }
+
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance"); }
+
+function _iterableToArray(iter) { if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter); }
+
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } }
+
 function Board() {
-  var cells = new Array(9).fill(null);
+  var cells = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : new Array(9).fill(null);
 
   var checkIfWinner = function checkIfWinner(player) {
     return cells[0] === player && cells[1] === player && cells[2] === player || cells[3] === player && cells[4] === player && cells[5] === player || cells[6] === player && cells[7] === player && cells[8] === player || cells[0] === player && cells[3] === player && cells[6] === player || cells[1] === player && cells[4] === player && cells[7] === player || cells[2] === player && cells[5] === player && cells[8] === player || cells[0] === player && cells[4] === player && cells[8] === player || cells[2] === player && cells[4] === player && cells[6] === player;
@@ -134,6 +142,12 @@ function Board() {
 
   var validMove = function validMove(move) {
     return move >= 1 && move <= 9 && cells[move - 1] === null;
+  };
+
+  var getValidMoves = function getValidMoves() {
+    return cells.reduce(function (acc, cell, index) {
+      return cell === null ? [].concat(_toConsumableArray(acc), [index + 1]) : acc;
+    }, []);
   };
 
   var setCell = function setCell(pos, value) {
@@ -162,11 +176,17 @@ function Board() {
     });
   };
 
+  var clone = function clone() {
+    return Board(_toConsumableArray(cells));
+  };
+
   return {
     validMove: validMove,
+    getValidMoves: getValidMoves,
     setCell: setCell,
     winner: winner,
-    toString: toString
+    toString: toString,
+    clone: clone
   };
 }
 },{}],"js/player.js":[function(require,module,exports) {
@@ -179,9 +199,113 @@ exports.default = Player;
 
 function Player(name, id) {
   var token = ['X', 'O'][id];
+
+  var playMove = function playMove() {};
+
   return {
     name: name,
-    token: token
+    token: token,
+    playMove: playMove
+  };
+}
+},{}],"js/ai.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = AI;
+
+function AI(name, id) {
+  var CALC_TIME = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 500;
+  var token = ['X', 'O'][id];
+
+  var playToEnd = function playToEnd(gs) {
+    var status; // eslint-disable-next-line no-constant-condition
+
+    while (true) {
+      status = gs.getStatus();
+
+      if (status.status !== 'playing') {
+        break;
+      }
+
+      var valid = gs.getValidMoves();
+      var move = valid[Math.floor(Math.random() * valid.length)];
+      gs.playMove(move);
+    }
+
+    return status;
+  };
+
+  var calcMove = function calcMove(gs) {
+    var stats = gs.getValidMoves().map(function (move) {
+      return {
+        move: move,
+        score: 0,
+        total: 0
+      };
+    });
+
+    for (var times = 0, eta = Date.now() + CALC_TIME; Date.now() < eta && times <= 50000; times += 1) {
+      var moveIdx = Math.floor(Math.random() * stats.length);
+      var move = stats[moveIdx].move;
+      var newGS = gs.clone();
+      newGS.playMove(move);
+
+      var _playToEnd = playToEnd(newGS),
+          status = _playToEnd.status,
+          _playToEnd$player = _playToEnd.player,
+          player = _playToEnd$player === void 0 ? {} : _playToEnd$player;
+
+      if (status === 'win') {
+        if (player.token === token) {
+          stats[moveIdx].score += 1;
+        } else {
+          stats[moveIdx].score -= 1;
+        }
+      }
+
+      stats[moveIdx].total += 1;
+    }
+
+    var best = stats.reduce(function (_ref, _ref2) {
+      var bestMove = _ref.bestMove,
+          bestScore = _ref.bestScore;
+      var move = _ref2.move,
+          score = _ref2.score,
+          total = _ref2.total;
+      var avg = score / total;
+
+      if (avg > bestScore) {
+        return {
+          bestMove: move,
+          bestScore: avg
+        };
+      }
+
+      return {
+        bestMove: bestMove,
+        bestScore: bestScore
+      };
+    }, {
+      bestMove: 0,
+      bestScore: -9e99
+    });
+    return best.bestMove;
+  };
+
+  var playMove = function playMove(gs, makeMove) {
+    var move = calcMove(gs);
+    setTimeout(function () {
+      return makeMove(move);
+    }, 100);
+  };
+
+  return {
+    name: name,
+    token: token,
+    playMove: playMove
   };
 }
 },{}],"js/game.js":[function(require,module,exports) {
@@ -196,12 +320,22 @@ var _board = _interopRequireDefault(require("./board"));
 
 var _player = _interopRequireDefault(require("./player"));
 
+var _ai = _interopRequireDefault(require("./ai"));
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread(); }
+
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance"); }
+
+function _iterableToArray(iter) { if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter); }
+
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } }
+
 var gameState = function GameState() {
-  var board = (0, _board.default)();
-  var players = [];
-  var currentPlayer = 0;
+  var board = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : (0, _board.default)();
+  var players = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : [];
+  var currentPlayer = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
 
   var newGame = function newGame() {
     var player = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
@@ -210,7 +344,8 @@ var gameState = function GameState() {
   };
 
   var setPlayer = function setPlayer(name, id) {
-    players[id] = (0, _player.default)(name, id);
+    var isAI = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+    players[id] = isAI ? (0, _ai.default)(name, id) : (0, _player.default)(name, id);
   };
 
   var playMove = function playMove(move) {
@@ -253,18 +388,33 @@ var gameState = function GameState() {
     return board.toString();
   };
 
+  var clone = function clone() {
+    return GameState(board.clone(), _toConsumableArray(players), currentPlayer);
+  };
+
+  var getValidMoves = function getValidMoves() {
+    return board.getValidMoves();
+  };
+
+  var nextPlayerTurn = function nextPlayerTurn(makeMove) {
+    players[currentPlayer].playMove(gameState, makeMove);
+  };
+
   return {
     setPlayer: setPlayer,
     playMove: playMove,
     getStatus: getStatus,
     getBoardState: getBoardState,
-    newGame: newGame
+    newGame: newGame,
+    clone: clone,
+    getValidMoves: getValidMoves,
+    nextPlayerTurn: nextPlayerTurn
   };
 }();
 
 var _default = gameState;
 exports.default = _default;
-},{"./board":"js/board.js","./player":"js/player.js"}],"js/index.js":[function(require,module,exports) {
+},{"./board":"js/board.js","./player":"js/player.js","./ai":"js/ai.js"}],"js/index.js":[function(require,module,exports) {
 "use strict";
 
 var _game = _interopRequireDefault(require("./game"));
@@ -293,21 +443,28 @@ function avatarImg(name, id) {
   return img;
 }
 
+function makeMove(move) {
+  document.querySelector("#cell-".concat(move)).click();
+  renderBoard();
+}
+
 function startGame() {
   _game.default.newGame();
 
   var player1 = document.querySelector('#player-1').value;
   var player2 = document.querySelector('#player-2').value;
 
-  _game.default.setPlayer(player1, 0);
+  _game.default.setPlayer(player1, 0, true);
 
-  _game.default.setPlayer(player2, 1);
+  _game.default.setPlayer(player2, 1, true);
 
   document.querySelector('#avatar-1').replaceWith(avatarImg(player1, 1));
   document.querySelector('#avatar-2').replaceWith(avatarImg(player2, 2));
   ticTacToe.style.display = 'grid';
   renderBoard();
   winner.style.display = 'none';
+
+  _game.default.nextPlayerTurn(makeMove);
 }
 
 function play(event) {
@@ -315,7 +472,9 @@ function play(event) {
     return;
   }
 
-  _game.default.playMove(event.target.id);
+  var id = event.target.id.split('-')[1];
+
+  _game.default.playMove(id);
 
   renderBoard();
 
@@ -332,12 +491,14 @@ function play(event) {
     winner.classList.add(token.toLowerCase());
     winner.style.display = 'block';
     document.querySelector('#play').textContent = 'Play again!';
+  } else if (status !== 'draw') {
+    _game.default.nextPlayerTurn(makeMove);
   }
 }
 
 ticTacToe.addEventListener('click', play);
 document.querySelector('#play').addEventListener('click', startGame);
-},{"./game":"js/game.js"}],"node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+},{"./game":"js/game.js"}],"../../../AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -365,7 +526,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "3759" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "58041" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
@@ -541,5 +702,5 @@ function hmrAcceptRun(bundle, id) {
     return true;
   }
 }
-},{}]},{},["node_modules/parcel-bundler/src/builtins/hmr-runtime.js","js/index.js"], null)
+},{}]},{},["../../../AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/hmr-runtime.js","js/index.js"], null)
 //# sourceMappingURL=/js.00a46daa.js.map

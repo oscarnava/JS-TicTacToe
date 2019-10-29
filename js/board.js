@@ -1,6 +1,4 @@
-export default function Board() {
-  const cells = new Array(9).fill(null);
-
+export default function Board(cells = new Array(9).fill(null)) {
   const checkIfWinner = (player) => (
     (cells[0] === player && cells[1] === player && cells[2] === player)
     || (cells[3] === player && cells[4] === player && cells[5] === player)
@@ -13,6 +11,8 @@ export default function Board() {
   );
 
   const validMove = (move) => (move >= 1) && (move <= 9) && (cells[move - 1] === null);
+
+  const getValidMoves = () => cells.reduce((acc, cell, index) => (cell === null ? [...acc, index + 1] : acc), []);
 
   const setCell = (pos, value) => {
     cells[pos - 1] = value;
@@ -33,10 +33,16 @@ export default function Board() {
 
   const toString = () => cells.map((cell) => (cell === null ? ' ' : ['X', 'O'][cell]));
 
+  const clone = () => {
+    return Board([...cells]);
+  };
+
   return {
     validMove,
+    getValidMoves,
     setCell,
     winner,
     toString,
+    clone,
   };
 }

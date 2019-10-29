@@ -24,18 +24,25 @@ function avatarImg(name, id) {
   return img;
 }
 
+function makeMove(move) {
+  document.querySelector(`#cell-${move}`).click();
+  renderBoard();
+}
+
 function startGame() {
   gameState.newGame();
   const player1 = document.querySelector('#player-1').value;
   const player2 = document.querySelector('#player-2').value;
-  gameState.setPlayer(player1, 0);
-  gameState.setPlayer(player2, 1);
+  gameState.setPlayer(player1, 0, true);
+  gameState.setPlayer(player2, 1, true);
   document.querySelector('#avatar-1').replaceWith(avatarImg(player1, 1));
   document.querySelector('#avatar-2').replaceWith(avatarImg(player2, 2));
 
   ticTacToe.style.display = 'grid';
   renderBoard();
   winner.style.display = 'none';
+
+  gameState.nextPlayerTurn(makeMove);
 }
 
 function play(event) {
@@ -43,7 +50,9 @@ function play(event) {
     return;
   }
 
-  gameState.playMove(event.target.id);
+  const id = event.target.id.split('-')[1];
+
+  gameState.playMove(id);
   renderBoard();
 
   const { status, player: { name, token } = {} } = gameState.getStatus();
@@ -53,6 +62,8 @@ function play(event) {
     winner.classList.add(token.toLowerCase());
     winner.style.display = 'block';
     document.querySelector('#play').textContent = 'Play again!';
+  } else if (status !== 'draw') {
+    gameState.nextPlayerTurn(makeMove);
   }
 }
 
