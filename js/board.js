@@ -1,5 +1,5 @@
 export default function Board(cells = new Array(9).fill(null)) {
-  const checkIfWinner = (player) => (
+  const checkIfWinner = player => (
     (cells[0] === player && cells[1] === player && cells[2] === player)
     || (cells[3] === player && cells[4] === player && cells[5] === player)
     || (cells[6] === player && cells[7] === player && cells[8] === player)
@@ -10,7 +10,7 @@ export default function Board(cells = new Array(9).fill(null)) {
     || (cells[2] === player && cells[4] === player && cells[6] === player)
   );
 
-  const validMove = (move) => (move >= 1) && (move <= 9) && (cells[move - 1] === null);
+  const validMove = move => (move >= 1) && (move <= 9) && (cells[move - 1] === null);
 
   const getValidMoves = () => cells
     .reduce((acc, cell, index) => (cell === null ? [...acc, index + 1] : acc), []);
@@ -32,7 +32,7 @@ export default function Board(cells = new Array(9).fill(null)) {
     return null;
   };
 
-  const toString = () => cells.map((cell) => (cell === null ? ' ' : ['X', 'O'][cell]));
+  const toString = () => cells.map(cell => (cell === null ? ' ' : ['X', 'O'][cell]));
 
   const clone = () => Board([...cells]);
 
