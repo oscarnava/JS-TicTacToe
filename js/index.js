@@ -1,4 +1,4 @@
-import gameState from './game';
+import gameState from './game.js';
 
 const ROBOHASH_URL = 'https://robohash.org';
 

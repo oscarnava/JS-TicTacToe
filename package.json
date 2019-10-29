@@ -21,6 +21,7 @@
   },
   "homepage": "https://github.com/MauricioRobayo/library#readme",
   "devDependencies": {
+    "cssnano": "^4.1.10",
     "eslint": "^6.5.1",
     "eslint-config-airbnb-base": "^14.0.0",
     "eslint-plugin-import": "^2.18.2",

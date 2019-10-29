@@ -1,6 +1,6 @@
-import Board from './board';
-import Player from './player';
-import AI from './ai';
+import Board from './board.js';
+import Player from './player.js';
+import AI from './ai.js';
 
 const gameState = (function GameState(board = Board(), players = [], currentPlayer = 0) {
   const newGame = (player = 0) => {
