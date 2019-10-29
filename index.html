@@ -10,17 +10,29 @@
 <body>
   <main>
     <h1>Tic Tac Toe</h1>
-    <div id="tic-tac-toe">
-      <div id="cell-1" class="cell"></div>
-      <div id="cell-2" class="cell"></div>
-      <div id="cell-3" class="cell"></div>
-      <div id="cell-4" class="cell"></div>
-      <div id="cell-5" class="cell"></div>
-      <div id="cell-6" class="cell"></div>
-      <div id="cell-7" class="cell"></div>
-      <div id="cell-8" class="cell"></div>
-      <div id="cell-9" class="cell"></div>
+    <div id="players">
+        <div>
+          <label id="avatar-1" for="player-1">Player 1</label>
+          <input id="player-1" value="Player 1" class="player" type="text">
+        </div>
+        <div>
+          <label id="avatar-2" for="player-2">Player 2</label>
+          <input id="player-2" value="Player 2" class="player" type="text">
+        </div>
+        <button id="play">Play!</button>
     </div>
+    <div id="tic-tac-toe">
+      <div id="1" class="cell"></div>
+      <div id="2" class="cell"></div>
+      <div id="3" class="cell"></div>
+      <div id="4" class="cell"></div>
+      <div id="5" class="cell"></div>
+      <div id="6" class="cell"></div>
+      <div id="7" class="cell"></div>
+      <div id="8" class="cell"></div>
+      <div id="9" class="cell"></div>
+    </div>
+    <div id="winner"></div>
   </main>
   <script src="js/index.js"></script>
 </body>

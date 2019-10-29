@@ -31,7 +31,7 @@ export default function Board() {
     return null;
   };
 
-  const toString = () => cells.map((cell) => (cell === null ? ' ' : ['X', 'O'][cell])).join('');
+  const toString = () => cells.map((cell) => (cell === null ? ' ' : ['X', 'O'][cell]));
 
   return {
     validMove,

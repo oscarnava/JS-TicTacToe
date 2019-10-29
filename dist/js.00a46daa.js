@@ -159,7 +159,7 @@ function Board() {
   var toString = function toString() {
     return cells.map(function (cell) {
       return cell === null ? ' ' : ['X', 'O'][cell];
-    }).join('');
+    });
   };
 
   return {
@@ -203,7 +203,8 @@ var gameState = function GameState() {
   var players = [];
   var currentPlayer = 0;
 
-  var newGame = function newGame(player) {
+  var newGame = function newGame() {
+    var player = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
     board = (0, _board.default)();
     currentPlayer = player;
   };
@@ -269,6 +270,73 @@ exports.default = _default;
 var _game = _interopRequireDefault(require("./game"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var ROBOHASH_URL = 'https://robohash.org';
+window.gs = _game.default;
+var ticTacToe = document.querySelector('#tic-tac-toe');
+var winner = document.querySelector('#winner');
+
+function renderBoard() {
+  _game.default.getBoardState().forEach(function (cell, index) {
+    if (cell === ' ') {
+      document.querySelector('#tic-tac-toe').children[index].className = 'cell';
+    } else {
+      document.querySelector('#tic-tac-toe').children[index].classList.add(cell.toLowerCase());
+    }
+  });
+}
+
+function avatarImg(name, id) {
+  var img = document.createElement('img');
+  img.src = "".concat(ROBOHASH_URL, "/").concat(name);
+  img.id = "avatar-".concat(id);
+  return img;
+}
+
+function startGame() {
+  _game.default.newGame();
+
+  var player1 = document.querySelector('#player-1').value;
+  var player2 = document.querySelector('#player-2').value;
+
+  _game.default.setPlayer(player1, 0);
+
+  _game.default.setPlayer(player2, 1);
+
+  document.querySelector('#avatar-1').replaceWith(avatarImg(player1, 1));
+  document.querySelector('#avatar-2').replaceWith(avatarImg(player2, 2));
+  ticTacToe.style.display = 'grid';
+  renderBoard();
+  winner.style.display = 'none';
+}
+
+function play(event) {
+  if (!event.target.classList.contains('cell') || _game.default.getStatus().status !== 'playing') {
+    return;
+  }
+
+  _game.default.playMove(event.target.id);
+
+  renderBoard();
+
+  var _gameState$getStatus = _game.default.getStatus(),
+      status = _gameState$getStatus.status,
+      _gameState$getStatus$ = _gameState$getStatus.player;
+
+  _gameState$getStatus$ = _gameState$getStatus$ === void 0 ? {} : _gameState$getStatus$;
+  var name = _gameState$getStatus$.name,
+      token = _gameState$getStatus$.token;
+
+  if (status === 'win') {
+    winner.textContent = "Winner: ".concat(name);
+    winner.classList.add(token.toLowerCase());
+    winner.style.display = 'block';
+    document.querySelector('#play').textContent = 'Play again!';
+  }
+}
+
+ticTacToe.addEventListener('click', play);
+document.querySelector('#play').addEventListener('click', startGame);
 },{"./game":"js/game.js"}],"node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
@@ -297,7 +365,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "11644" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "3759" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

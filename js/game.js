@@ -6,7 +6,7 @@ const gameState = (function GameState() {
   const players = [];
   let currentPlayer = 0;
 
-  const newGame = (player) => {
+  const newGame = (player = 0) => {
     board = Board();
     currentPlayer = player;
   };
