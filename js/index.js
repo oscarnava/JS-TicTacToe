@@ -31,10 +31,12 @@ function makeMove(move) {
 
 function startGame() {
   gameState.newGame();
+
   const player1 = document.querySelector('#player-1').value;
   const player2 = document.querySelector('#player-2').value;
-  gameState.setPlayer(player1, 0, true);
-  gameState.setPlayer(player2, 1, true);
+
+  gameState.setPlayer(player1, 0, document.querySelector('#ai-1').checked);
+  gameState.setPlayer(player2, 1, document.querySelector('#ai-2').checked);
   document.querySelector('#avatar-1').replaceWith(avatarImg(player1, 1));
   document.querySelector('#avatar-2').replaceWith(avatarImg(player2, 2));
 
@@ -55,14 +57,12 @@ function play(event) {
   gameState.playMove(id);
   renderBoard();
 
-  const { status, player: { name, token } = {} } = gameState.getStatus();
-
-  if (status === 'win') {
-    winner.textContent = `Winner: ${name}`;
-    winner.classList.add(token.toLowerCase());
+  const { status, player: { name } = {} } = gameState.getStatus();
+  if (status !== 'playing') {
+    winner.textContent = status === 'win' ? `Winner: ${name}` : 'No winner!';
     winner.style.display = 'block';
     document.querySelector('#play').textContent = 'Play again!';
-  } else if (status !== 'draw') {
+  } else {
     gameState.nextPlayerTurn(makeMove);
   }
 }

@@ -454,9 +454,9 @@ function startGame() {
   var player1 = document.querySelector('#player-1').value;
   var player2 = document.querySelector('#player-2').value;
 
-  _game.default.setPlayer(player1, 0, true);
+  _game.default.setPlayer(player1, 0, document.querySelector('#ai-1').checked);
 
-  _game.default.setPlayer(player2, 1, true);
+  _game.default.setPlayer(player2, 1, document.querySelector('#ai-2').checked);
 
   document.querySelector('#avatar-1').replaceWith(avatarImg(player1, 1));
   document.querySelector('#avatar-2').replaceWith(avatarImg(player2, 2));
@@ -483,22 +483,20 @@ function play(event) {
       _gameState$getStatus$ = _gameState$getStatus.player;
 
   _gameState$getStatus$ = _gameState$getStatus$ === void 0 ? {} : _gameState$getStatus$;
-  var name = _gameState$getStatus$.name,
-      token = _gameState$getStatus$.token;
+  var name = _gameState$getStatus$.name;
 
-  if (status === 'win') {
-    winner.textContent = "Winner: ".concat(name);
-    winner.classList.add(token.toLowerCase());
+  if (status !== 'playing') {
+    winner.textContent = status === 'win' ? "Winner: ".concat(name) : 'No winner!';
     winner.style.display = 'block';
     document.querySelector('#play').textContent = 'Play again!';
-  } else if (status !== 'draw') {
+  } else {
     _game.default.nextPlayerTurn(makeMove);
   }
 }
 
 ticTacToe.addEventListener('click', play);
 document.querySelector('#play').addEventListener('click', startGame);
-},{"./game":"js/game.js"}],"../../../AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+},{"./game":"js/game.js"}],"node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -526,7 +524,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "58041" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "5850" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
@@ -702,5 +700,5 @@ function hmrAcceptRun(bundle, id) {
     return true;
   }
 }
-},{}]},{},["../../../AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/hmr-runtime.js","js/index.js"], null)
+},{}]},{},["node_modules/parcel-bundler/src/builtins/hmr-runtime.js","js/index.js"], null)
 //# sourceMappingURL=/js.00a46daa.js.map

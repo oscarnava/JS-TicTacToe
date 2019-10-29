@@ -12,14 +12,31 @@
     <h1>Tic Tac Toe</h1>
     <div id="players">
         <div>
-          <label id="avatar-1" for="player-1">Player 1</label>
+          <label for="ai-1" class="toggle">
+            <input class="toggle__input" type="checkbox" name="ai-1" id="ai-1">
+            <span class="toggle__label">
+              <span class="toggle__text">AI</span>
+            </span>
+          </label>
+          <label id="avatar-1" for="player-1">
+            <img src="https://robohash.org/Player 1" alt="">
+          </label>
           <input id="player-1" value="Player 1" class="player" type="text">
         </div>
         <div>
-          <label id="avatar-2" for="player-2">Player 2</label>
+          <label for="ai-2" class="toggle">
+            <input class="toggle__input" type="checkbox" name="ai-2" id="ai-2" checked>
+            <span class="toggle__label">
+              <span class="toggle__text">AI</span>
+            </span>
+          </label>
+          <label id="avatar-2" for="player-2">
+            <img src="https://robohash.org/Player 2" alt="">
+          </label>
           <input id="player-2" value="Player 2" class="player" type="text">
         </div>
         <button id="play">Play!</button>
+        <div id="winner"></div>
     </div>
     <div id="tic-tac-toe">
       <div id="cell-1" class="cell"></div>
@@ -32,7 +49,6 @@
       <div id="cell-8" class="cell"></div>
       <div id="cell-9" class="cell"></div>
     </div>
-    <div id="winner"></div>
   </main>
   <script src="js/index.js"></script>
 </body>
