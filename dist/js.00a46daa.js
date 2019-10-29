@@ -247,7 +247,7 @@ function AI(name, id) {
       };
     });
 
-    for (var times = 0, eta = Date.now() + CALC_TIME; Date.now() < eta && times <= 50000; times += 1) {
+    for (var times = 0, eta = Date.now() + CALC_TIME; Date.now() < eta && times < 5e4; times += 1) {
       var moveIdx = Math.floor(Math.random() * stats.length);
       var move = stats[moveIdx].move;
       var newGS = gs.clone();

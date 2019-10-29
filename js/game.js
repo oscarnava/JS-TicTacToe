@@ -36,9 +36,7 @@ const gameState = (function GameState(board = Board(), players = [], currentPlay
 
   const getBoardState = () => board.toString();
 
-  const clone = () => {
-    return GameState(board.clone(), [...players], currentPlayer);
-  };
+  const clone = () => GameState(board.clone(), [...players], currentPlayer);
 
   const getValidMoves = () => board.getValidMoves();
 

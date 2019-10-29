@@ -18,7 +18,7 @@ export default function AI(name, id, CALC_TIME = 500) {
 
   const calcMove = (gs) => {
     const stats = gs.getValidMoves().map((move) => ({ move, score: 0, total: 0 }));
-    for (let times = 0, eta = Date.now() + CALC_TIME; Date.now() < eta && times <= 50000; times += 1) {
+    for (let times = 0, eta = Date.now() + CALC_TIME; Date.now() < eta && times < 5e4; times += 1) {
       const moveIdx = Math.floor(Math.random() * stats.length);
       const { move } = stats[moveIdx];
       const newGS = gs.clone();

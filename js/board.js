@@ -12,7 +12,8 @@ export default function Board(cells = new Array(9).fill(null)) {
 
   const validMove = (move) => (move >= 1) && (move <= 9) && (cells[move - 1] === null);
 
-  const getValidMoves = () => cells.reduce((acc, cell, index) => (cell === null ? [...acc, index + 1] : acc), []);
+  const getValidMoves = () => cells
+    .reduce((acc, cell, index) => (cell === null ? [...acc, index + 1] : acc), []);
 
   const setCell = (pos, value) => {
     cells[pos - 1] = value;
@@ -33,9 +34,7 @@ export default function Board(cells = new Array(9).fill(null)) {
 
   const toString = () => cells.map((cell) => (cell === null ? ' ' : ['X', 'O'][cell]));
 
-  const clone = () => {
-    return Board([...cells]);
-  };
+  const clone = () => Board([...cells]);
 
   return {
     validMove,
