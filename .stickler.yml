@@ -1,7 +1,0 @@
-linters:
-  eslint:
-    config: './.eslintrc.js'
-    fixer: true
-
-fixers:
-  enable: true
