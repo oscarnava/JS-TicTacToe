@@ -5,3 +5,7 @@ linters:
 
 fixers:
   enable: true
+
+files:
+  ignore:
+    - 'dist/*'
