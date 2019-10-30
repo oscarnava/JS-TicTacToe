@@ -17,8 +17,9 @@ export default function AI(name, id, CALC_TIME = 500) {
   };
 
   const calcMove = (gs) => {
-    const stats = gs.getValidMoves().map(move => ({ move, score: 0, total: 0 }));
-    for (let times = 0, eta = Date.now() + CALC_TIME; Date.now() < eta && times < 5e4; times += 1) {
+    const stats = gs.getValidMoves().map((move) => ({ move, score: 0, total: 0 }));
+    let times = 0;
+    for (let eta = Date.now() + CALC_TIME; Date.now() < eta && times < 1e5; times += 1) {
       const moveIdx = Math.floor(Math.random() * stats.length);
       const { move } = stats[moveIdx];
       const newGS = gs.clone();
@@ -33,6 +34,8 @@ export default function AI(name, id, CALC_TIME = 500) {
       }
       stats[moveIdx].total += 1;
     }
+
+    // console.log('Times', times);
 
     const best = stats.reduce(({ bestMove, bestScore }, { move, score, total }) => {
       const avg = score / total;

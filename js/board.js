@@ -1,38 +1,38 @@
-export default function Board(cells = new Array(9).fill(null)) {
-  const checkIfWinner = player => (
-    (cells[0] === player && cells[1] === player && cells[2] === player)
-    || (cells[3] === player && cells[4] === player && cells[5] === player)
-    || (cells[6] === player && cells[7] === player && cells[8] === player)
-    || (cells[0] === player && cells[3] === player && cells[6] === player)
-    || (cells[1] === player && cells[4] === player && cells[7] === player)
-    || (cells[2] === player && cells[5] === player && cells[8] === player)
-    || (cells[0] === player && cells[4] === player && cells[8] === player)
-    || (cells[2] === player && cells[4] === player && cells[6] === player)
-  );
+/* eslint-disable no-bitwise */
+export default function Board(cells = new Array(9).fill(0)) {
+  const checkIfWinner = () => {
+    const [a, b, c, d, e, f, g, h, i] = cells;
+    return (a & b & c)
+        || (d & e & f)
+        || (g & h & i)
+        || (a & d & g)
+        || (b & e & h)
+        || (c & f & i)
+        || (a & e & i)
+        || (c & e & g);
+  };
 
-  const validMove = move => (move >= 1) && (move <= 9) && (cells[move - 1] === null);
+  const validMove = (move) => (move >= 1) && (move <= 9) && !cells[move - 1];
 
   const getValidMoves = () => cells
-    .reduce((acc, cell, index) => (cell === null ? [...acc, index + 1] : acc), []);
+    .reduce((acc, cell, index) => (cell ? acc : [...acc, index + 1]), []);
 
   const setCell = (pos, value) => {
-    cells[pos - 1] = value;
+    cells[pos - 1] = value + 1;
   };
 
   const winner = () => {
-    if (checkIfWinner(0)) {
-      return 0;
+    const winr = checkIfWinner();
+    if (winr) {
+      return winr - 1;
     }
-    if (checkIfWinner(1)) {
-      return 1;
-    }
-    if (!cells.includes(null)) {
+    if (!cells.includes(0)) {
       return -1;
     }
     return null;
   };
 
-  const toString = () => cells.map(cell => (cell === null ? ' ' : ['X', 'O'][cell]));
+  const toString = () => cells.map((cell) => [' ', 'X', 'O'][cell]);
 
   const clone = () => Board([...cells]);
 
