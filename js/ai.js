@@ -20,7 +20,7 @@ export default function AI(name, id, CALC_TIME = 500) {
   };
 
   const calcMove = (gs) => {
-    const stats = gs.getValidMoves().map(move => ({ move, score: 0, total: 0 }));
+    const stats = gs.getValidMoves().map((move) => ({ move, score: 0, total: 0 }));
     let times = 0;
     for (let eta = Date.now() + CALC_TIME; Date.now() < eta && times < 1e5; times += 1) {
       const moveIdx = Math.floor(Math.random() * stats.length);

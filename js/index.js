@@ -4,46 +4,36 @@ const ROBOHASH_URL = 'https://robohash.org';
 
 window.gs = gameState;
 
-const ticTacToe = document.querySelector('#tic-tac-toe');
-const winner = document.querySelector('#winner');
+const qrySelect = document.querySelector.bind(document);
+const [ticTacToe, winner, player1, player2, ai1, ai2, playBtn, avatar1Img, avatar2Img] = [
+  '#tic-tac-toe', '#winner', '#player-1', '#player-2', '#ai-1', '#ai-2', '#play', '#avatar-1', '#avatar-2',
+].map(qrySelect);
 
 function renderBoard() {
   gameState.getBoardState().forEach((cell, index) => {
-    if (cell === ' ') {
-      document.querySelector('#tic-tac-toe').children[index].className = 'cell';
-    } else {
-      document.querySelector('#tic-tac-toe').children[index].classList.add(cell.toLowerCase());
-    }
+    ticTacToe.children[index].className = `cell ${cell.toLowerCase()}`.trim();
   });
 }
 
-function avatarImg(name, id) {
-  const img = document.createElement('img');
-  img.src = `${ROBOHASH_URL}/${name}`;
-  img.id = `avatar-${id}`;
-  return img;
-}
-
 function makeMove(move) {
-  document.querySelector(`#cell-${move}`).click();
+  qrySelect(`#cell-${move}`).click();
   renderBoard();
 }
 
 function startGame() {
   gameState.newGame();
 
-  const player1 = document.querySelector('#player-1').value;
-  const player2 = document.querySelector('#player-2').value;
+  gameState.setPlayer(player1.value, 0, ai1.checked);
+  gameState.setPlayer(player2.value, 1, ai2.checked);
 
-  gameState.setPlayer(player1, 0, document.querySelector('#ai-1').checked);
-  gameState.setPlayer(player2, 1, document.querySelector('#ai-2').checked);
-  document.querySelector('#avatar-1').replaceWith(avatarImg(player1, 1));
-  document.querySelector('#avatar-2').replaceWith(avatarImg(player2, 2));
+  avatar1Img.src = `${ROBOHASH_URL}/${player1.value}`;
+  avatar2Img.src = `${ROBOHASH_URL}/${player2.value}`;
 
   ticTacToe.style.display = 'grid';
-  renderBoard();
   winner.style.display = 'none';
+  playBtn.style.display = 'none';
 
+  renderBoard();
   gameState.nextPlayerTurn(makeMove);
 }
 
@@ -52,20 +42,19 @@ function play(event) {
     return;
   }
 
-  const id = event.target.id.split('-')[1];
-
-  gameState.playMove(id);
+  gameState.playMove(event.target.id.split('-')[1]);
   renderBoard();
 
   const { status, player: { name } = {} } = gameState.getStatus();
   if (status !== 'playing') {
-    winner.textContent = status === 'win' ? `Winner: ${name}` : 'No winner!';
+    winner.textContent = (status === 'win' ? `Winner: ${name}` : 'No winner!');
     winner.style.display = 'block';
-    document.querySelector('#play').textContent = 'Play again!';
+    playBtn.textContent = 'Play again!';
+    playBtn.style.display = 'block';
   } else {
     gameState.nextPlayerTurn(makeMove);
   }
 }
 
 ticTacToe.addEventListener('click', play);
-document.querySelector('#play').addEventListener('click', startGame);
+playBtn.addEventListener('click', startGame);
