@@ -1,18 +1,17 @@
 export default function AI(name, id, CALC_TIME = 500) {
   const token = ['X', 'O'][id];
 
-  const playToEnd = (gs) => {
-    let status;
+  const playToEnd = (gs, start) => {
+    gs = gs.clone();
+    gs.playMove(start);
+
+    let status = gs.getStatus();
     let moves = 1;
-    // eslint-disable-next-line no-constant-condition
-    while (true) {
-      status = gs.getStatus();
-      if (status.status !== 'playing') {
-        break;
-      }
+    while (status.status === 'playing') {
       const valid = gs.getValidMoves();
       const move = valid[Math.floor(Math.random() * valid.length)];
       gs.playMove(move);
+      status = gs.getStatus();
       moves += 1;
     }
     status.moves = moves;
@@ -22,21 +21,22 @@ export default function AI(name, id, CALC_TIME = 500) {
   const calcMove = (gs) => {
     const stats = gs.getValidMoves().map((move) => ({ move, score: 0, total: 0 }));
     let times = 0;
-    for (let eta = Date.now() + CALC_TIME; Date.now() < eta && times < 1e5; times += 1) {
-      const moveIdx = Math.floor(Math.random() * stats.length);
-      const { move } = stats[moveIdx];
-      const newGS = gs.clone();
-      newGS.playMove(move);
-      const { status, moves, player = {} } = playToEnd(newGS);
+    for (let eta = Date.now() + CALC_TIME; Date.now() < eta && times < 5e4; times += 1) {
+      const stat = stats[Math.floor(Math.random() * stats.length)];
+      const { status, moves, player = {} } = playToEnd(gs, stat.move);
       if (status === 'win') {
         if (player.token === token) {
-          stats[moveIdx].score += 1.0 / moves;
+          stat.score += 1.0 / moves;
         } else {
-          stats[moveIdx].score -= 1.0 / moves;
+          stat.score -= 1.0 / moves;
         }
+      } else if (status === 'draw') {
+        stat.score += 0.25 / moves;
       }
-      stats[moveIdx].total += 1;
+      stat.total += 1;
     }
+
+    console.log('Times', times, stats);
 
     const best = stats.reduce(({ bestMove, bestScore }, { move, score, total }) => {
       const avg = score / total;
@@ -48,6 +48,7 @@ export default function AI(name, id, CALC_TIME = 500) {
 
     return best.bestMove;
   };
+
 
   const playMove = (gs, makeMove) => {
     const move = calcMove(gs);
