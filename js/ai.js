@@ -3,6 +3,7 @@ export default function AI(name, id, CALC_TIME = 500) {
 
   const playToEnd = (gs) => {
     let status;
+    let moves = 1;
     // eslint-disable-next-line no-constant-condition
     while (true) {
       status = gs.getStatus();
@@ -12,7 +13,9 @@ export default function AI(name, id, CALC_TIME = 500) {
       const valid = gs.getValidMoves();
       const move = valid[Math.floor(Math.random() * valid.length)];
       gs.playMove(move);
+      moves += 1;
     }
+    status.moves = moves;
     return status;
   };
 
@@ -24,18 +27,16 @@ export default function AI(name, id, CALC_TIME = 500) {
       const { move } = stats[moveIdx];
       const newGS = gs.clone();
       newGS.playMove(move);
-      const { status, player = {} } = playToEnd(newGS);
+      const { status, moves, player = {} } = playToEnd(newGS);
       if (status === 'win') {
         if (player.token === token) {
-          stats[moveIdx].score += 1;
+          stats[moveIdx].score += 1.0 / moves;
         } else {
-          stats[moveIdx].score -= 1;
+          stats[moveIdx].score -= 1.0 / moves;
         }
       }
       stats[moveIdx].total += 1;
     }
-
-    // console.log('Times', times);
 
     const best = stats.reduce(({ bestMove, bestScore }, { move, score, total }) => {
       const avg = score / total;
