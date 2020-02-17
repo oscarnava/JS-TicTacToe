@@ -16,3 +16,4 @@ To build the application you will have to install dependencies and run **Parcel*
 npm install
 npx parcel index.html
 ```
+And open the location http://localhost:1234/ with your browser.
