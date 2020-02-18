@@ -2,9 +2,9 @@
 
 [<img src="docs/tictactoe.png" align="right" width="30%">](https://oscarnava.me/tictactoe/)
 
-An online Tic-Tac-Toe game built-in AI. If you have been living under a rock 😁 and you don't know this game and its rules, you can check them out at [this link](https://en.wikipedia.org/wiki/Tic-tac-toe).
+An online Tic-Tac-Toe game with a built-in AI. If you have been living under a rock 😁 and you don't know this game and its rules, you can check them out at [this link](https://en.wikipedia.org/wiki/Tic-tac-toe).
 
-To start a game, type the name of the players in the corresponding editor (the corresponding avatar will change depending on your name), select wheter you want to play against a human 👦↔👧, the computer 👧↔🤖, or you can even select both players to be AI's 🤖↔🤖.
+To start a game, type the name of the players in the corresponding editor (the corresponding avatar will change depending on your name), select whether you want to play against a human 👦↔👧, the computer 👧↔🤖, or you can even select both players to be AI's 🤖↔🤖.
 
 Do you want to try it now? You can play the game at this link: 🕹 [Tic-Tac-Toe](https://oscarnava.me/tictactoe/).
 
